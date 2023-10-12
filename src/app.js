@@ -3,7 +3,65 @@ import { uploadImage } from "./modules/file.mjs";
 
 let formInput = document.querySelector("#search");
 let card = document.querySelector(".result");
+const cardComponent = (data) => {
+  return `
+      <div class="card column is-3 ">
+    <header class="card-header">
+        <p class="label card-header-title">
+            ${data.label}
+        </p>
+    </header>
+    <div class="card-content">
+        <span class="name">Nom :${data.name}</span> <br>
+        <span class="city">Ville :${data.city}</span> <br>
+        <span class="postcode">Code Postal :${data.postcode}</span>   
+      </div>
+        <footer class="card-footer">
+            <button class="supp button is-light card-footer-item">Supprimer</button>
+            <button class="voir button is-dark card-footer-item" data-id="${data.id}" >Voir</button>
+        </footer>
+      </div>
+      `;
+};
 
+const modalComponent = (data) => {
+  return `
+    <div class="modal" data-id="${data.id}">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">${data.label}</p>
+            <button class="delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+            <span class="label">${data.label}</span> <br>
+            <span class="name">${data.name}</span> <br>
+            <span class="city">${data.city}</span> <br>
+            <span class="postcode">${data.postcode}</span> <br><br>
+            <div class="formmodal">
+            <label for="nomPoint">Nom :</label><input type="text" class="nomPoint input" placeholder="Entrez un titre" id="nom${data.id}"> <br>
+            <label for="descPoint">Description :</label><input type="text" class="descPoint input" placeholder="Entrez une description" id="desc${data.id}"> <br> <br>
+            <div class="file">
+                <label class="file-label">
+                    <input class="file-input" type="file" name="resume">
+                    <span class="file-cta">
+                        <span class="file-icon">
+                            <i class="fas fa-upload"></i>
+                        </span>
+                        <span class="file-label">
+                            Importer une image
+                        </span>
+                    </span>
+                </label>
+            </div> <br>
+            <div> <img src="" alt="" class="img-preview"></div>
+            <button class="SavePoint button is-dark" data-id="${data.id}">Enregistrer</button>
+            </div>
+        </section>
+    </div>
+    </div>         
+    `;
+};
 window.onload = () => {
   if (localStorage != null) {
     setTimeout(() => {
@@ -13,77 +71,9 @@ window.onload = () => {
     lskey.forEach((key) => {
       let jsonData = JSON.parse(localStorage.getItem(key));
       if (jsonData.id != null) {
-        card.innerHTML +=
-          '<div class="card column is-3 ">' +
-          '<header class="card-header"><p class="label card-header-title">' +
-          jsonData.label +
-          "</p></header>" +
-          '            <div class="card-content"><span class="name">Nom :' +
-          jsonData.name +
-          "</span> <br>" +
-          '            <span class="city">Ville :' +
-          jsonData.city +
-          "</span> <br>" +
-          '            <span class="postcode">Code Postal :' +
-          jsonData.postcode +
-          "</span></div> <br>" +
-          '        <footer class="card-footer"><button class="supp button is-light card-footer-item">Supprimer</button> <button class="voir button is-dark card-footer-item" data-id="' +
-          jsonData.id +
-          '" >Voir</button></footer></div> <br>';
+        card.innerHTML += cardComponent(jsonData);
 
-        document.querySelector(".mod").innerHTML +=
-          '<div class="modal" data-id="' +
-          jsonData.id +
-          '">\n' +
-          '<div class="modal-background"></div>\n' +
-          '<div class="modal-card">\n' +
-          '                    <header class="modal-card-head">\n' +
-          '                        <p class="modal-card-title">' +
-          jsonData.label +
-          "</p>\n" +
-          '                        <button class="delete" aria-label="close"></button>\n' +
-          "                    </header>\n" +
-          '                    <section class="modal-card-body">\n' +
-          '            <span class="label">' +
-          jsonData.label +
-          "</span> <br>" +
-          '            <span class="name">' +
-          jsonData.name +
-          "</span> <br>" +
-          '            <span class="city">' +
-          jsonData.city +
-          "</span> <br>" +
-          '            <span class="postcode">' +
-          jsonData.postcode +
-          "</span> <br><br>" +
-          '<div class="formmodal">' +
-          '<label for="nomPoint">Nom :</label><input type="text" class="nomPoint input" placeholder="Entrez un titre" id="nom' +
-          jsonData.id +
-          '"> <br>' +
-          '<label for="descPoint">Description :</label><input type="text" class="descPoint input" placeholder="Entrez une description" id="desc' +
-          jsonData.id +
-          '"> <br> <br>' +
-          '<div class="file">\n' +
-          '  <label class="file-label">\n' +
-          '    <input class="file-input" type="file" name="resume">\n' +
-          '    <span class="file-cta">\n' +
-          '      <span class="file-icon">\n' +
-          '        <i class="fas fa-upload"></i>\n' +
-          "      </span>\n" +
-          '      <span class="file-label">\n' +
-          "        Importer une image" +
-          "      </span>\n" +
-          "    </span>\n" +
-          "  </label>\n" +
-          "</div> <br>" +
-          '<div> <img src="" alt="" class="img-preview"></div>' +
-          '<button class="SavePoint button is-dark" data-id="' +
-          jsonData.id +
-          '">Enregistrer</button>' +
-          "</div>" +
-          "                    </section>" +
-          "</div>\n" +
-          "</div>";
+        document.querySelector(".mod").innerHTML += modalComponent(jsonData);
       }
       let imageLink;
       if (document.querySelector(".file-input")) {
