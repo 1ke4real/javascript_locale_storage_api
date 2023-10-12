@@ -2,7 +2,7 @@ import "./assets/style.scss";
 import { loader } from "./modules/loader.mjs";
 
 let point = document.querySelector("#allpoint");
-const cardComponent = (data) => {
+const cardComponent = (data, localData) => {
   return `
     <div class="card">
     <header class="card-header">
@@ -11,13 +11,13 @@ const cardComponent = (data) => {
         </p>
     </header>
     <div class="card-content">
-        <span class="desc-interet">Description : ${data.description}</span><br> <br>
+        <span class="desc-interet">Description : ${localData.description}</span><br> <br>
         <span class="label">Adresse</span>
         <span class="">Label :${data.label}</span>
         <span class="">Nom :${data.name}</span> <br>
         <span class="">Ville :${data.city}</span> <br>
         <span class="">Code Postal :${data.postcode}</span>
-        <img src="${data.image}" alt="" class="img-point">
+        <img src="${localData.image}" alt="" class="img-point">
     </div>
     <footer class="card-footer">
         <button class="suppPoint button is-danger card-footer-item">Supprimer</button>
@@ -27,12 +27,12 @@ loader();
 
 window.onload = () => {
   let lskey = Object.keys(localStorage);
+  console.log(lskey);
   lskey.forEach((key) => {
     let jsonData = JSON.parse(localStorage.getItem(key));
     let jsonPoint = JSON.parse(localStorage.getItem("point-" + jsonData.id));
     if (jsonPoint != null) {
-      console.log(jsonPoint);
-      point.innerHTML += cardComponent(jsonPoint);
+      point.innerHTML += cardComponent(jsonData, jsonPoint);
     }
     document.querySelectorAll(".suppPoint").forEach((supp) => {
       supp.addEventListener("click", () => {
