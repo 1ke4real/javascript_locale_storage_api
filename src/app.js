@@ -13,49 +13,13 @@ window.onload = () => {
         lskey.forEach((key) => {
             let jsonData = JSON.parse(localStorage.getItem(key))
             if (jsonData.id != null) {
-                card.innerHTML += '<div class="card column is-3 ">' +
-                    '            <header class="card-header"><p class="label card-header-title">' + jsonData.label + '</p></header>' +
-                    '            <div class="card-content"><span class="name">Nom :' + jsonData.name + '</span> <br>' +
-                    '            <span class="city">Ville :' + jsonData.city + '</span> <br>' +
-                    '            <span class="postcode">Code Postal :' + jsonData.postcode + '</span></div> <br>' +
-                    '        <footer class="card-footer"><button class="supp button is-light card-footer-item">Supprimer</button> <button class="voir button is-dark card-footer-item" data-id="' + jsonData.id + '" >Voir</button></footer></div> <br>'
+                card.innerHTML += '<div class="card column is-3 ">' + '            <header class="card-header"><p class="label card-header-title">' + jsonData.label + '</p></header>' + '            <div class="card-content"><span class="name">Nom :' + jsonData.name + '</span> <br>' + '            <span class="city">Ville :' + jsonData.city + '</span> <br>' + '            <span class="postcode">Code Postal :' + jsonData.postcode + '</span></div> <br>' + '        <footer class="card-footer"><button class="supp button is-light card-footer-item">Supprimer</button> <button class="voir button is-dark card-footer-item" data-id="' + jsonData.id + '" >Voir</button></footer></div> <br>'
 
-                document.querySelector('.mod').innerHTML += '<div class="modal" data-id="' + jsonData.id + '">\n' +
-                    '                <div class="modal-background"></div>\n' +
-                    '                <div class="modal-card">\n' +
-                    '                    <header class="modal-card-head">\n' +
-                    '                        <p class="modal-card-title">' + jsonData.label + '</p>\n' +
-                    '                        <button class="delete" aria-label="close"></button>\n' +
-                    '                    </header>\n' +
-                    '                    <section class="modal-card-body">\n' +
-                    '            <span class="label">' + jsonData.label + '</span> <br>' +
-                    '            <span class="name">' + jsonData.name + '</span> <br>' +
-                    '            <span class="city">' + jsonData.city + '</span> <br>' +
-                    '            <span class="postcode">' + jsonData.postcode + '</span> <br><br>' +
-                    '<div class="formmodal">' +
-                    '<label for="nomPoint">Nom :</label><input type="text" class="nomPoint input" placeholder="Entrez un titre" id="nom' + jsonData.id + '"> <br>' +
-                    '<label for="descPoint">Description :</label><input type="text" class="descPoint input" placeholder="Entrez une description" id="desc' + jsonData.id + '"> <br> <br>' +
-                    '<div class="file">\n' +
-                    '  <label class="file-label">\n' +
-                    '    <input class="file-input" type="file" name="resume">\n' +
-                    '    <span class="file-cta">\n' +
-                    '      <span class="file-icon">\n' +
-                    '        <i class="fas fa-upload"></i>\n' +
-                    '      </span>\n' +
-                    '      <span class="file-label">\n' +
-                    '        Importer une image' +
-                    '      </span>\n' +
-                    '    </span>\n' +
-                    '  </label>\n' +
-                    '</div> <br>' +
-                    '<div> <img src="" alt="" class="img-preview"></div>' +
-                    '<button class="SavePoint button is-dark" data-id="' + jsonData.id + '">Enregistrer</button>' +
+                document.querySelector('.mod').innerHTML += '<div class="modal" data-id="' + jsonData.id + '">\n' + '                <div class="modal-background"></div>\n' + '                <div class="modal-card">\n' + '                    <header class="modal-card-head">\n' + '                        <p class="modal-card-title">' + jsonData.label + '</p>\n' + '                        <button class="delete" aria-label="close"></button>\n' + '                    </header>\n' + '                    <section class="modal-card-body">\n' + '            <span class="label">' + jsonData.label + '</span> <br>' + '            <span class="name">' + jsonData.name + '</span> <br>' + '            <span class="city">' + jsonData.city + '</span> <br>' + '            <span class="postcode">' + jsonData.postcode + '</span> <br><br>' + '<div class="formmodal">' + '<label for="nomPoint">Nom :</label><input type="text" class="nomPoint input" placeholder="Entrez un titre" id="nom' + jsonData.id + '"> <br>' + '<label for="descPoint">Description :</label><input type="text" class="descPoint input" placeholder="Entrez une description" id="desc' + jsonData.id + '"> <br> <br>' + '<div class="file">\n' + '  <label class="file-label">\n' + '    <input class="file-input" type="file" name="resume">\n' + '    <span class="file-cta">\n' + '      <span class="file-icon">\n' + '        <i class="fas fa-upload"></i>\n' + '      </span>\n' + '      <span class="file-label">\n' + '        Importer une image' + '      </span>\n' + '    </span>\n' + '  </label>\n' + '</div> <br>' + '<div> <img src="" alt="" class="img-preview"></div>' + '<button class="SavePoint button is-dark" data-id="' + jsonData.id + '">Enregistrer</button>' +
 
-                    '</div>' +
-                    '                    </section>' +
+                    '</div>' + '                    </section>' +
 
-                    '                </div>\n' +
-                    '            </div>'
+                    '                </div>\n' + '            </div>'
 
 
             }
@@ -87,11 +51,7 @@ window.onload = () => {
 
                         }
                         localStorage.setItem('point-' + save.dataset.id, JSON.stringify(pointObject))
-                        Swal.fire(
-                            'Bravo !',
-                            'Nouvel ajout de point',
-                            'success'
-                        )
+                        Swal.fire('Bravo !', 'Nouvel ajout de point', 'success')
                         document.querySelectorAll('.modal').forEach((mod) => {
                             mod.classList.remove('is-active')
                         })
@@ -152,12 +112,7 @@ window.onload = () => {
                     .then(data => {
                         data.features.forEach((values, key) => {
                             console.log(values.properties)
-                            card.innerHTML += '<div class="card column is-3 card-search" data-id="' + values.properties.id + '">' +
-                                '           <div class="card-header"> <p class="label card-header-title">' + values.properties.label + '</p></div> <br>' +
-                                '           <div class="card-content"> <span class="name">Nom :' + values.properties.name + '</span> <br>' +
-                                '<span class="city">Ville :' + values.properties.city + '</span> <br>' +
-                                '<span class="postcode">Code Postal :' + values.properties.postcode + '</span></div>' +
-                                '       <div class="card-footer"> <button class="ajouter button is-dark card-footer-item" data-id="' + values.properties.id + '">Ajouter</button> </div></div> <br>'
+                            card.innerHTML += '<div class="card column is-3 card-search" data-id="' + values.properties.id + '">' + '           <div class="card-header"> <p class="label card-header-title">' + values.properties.label + '</p></div> <br>' + '           <div class="card-content"> <span class="name">Nom :' + values.properties.name + '</span> <br>' + '<span class="city">Ville :' + values.properties.city + '</span> <br>' + '<span class="postcode">Code Postal :' + values.properties.postcode + '</span></div>' + '       <div class="card-footer"> <button class="ajouter button is-dark card-footer-item" data-id="' + values.properties.id + '">Ajouter</button> </div></div> <br>'
                             document.querySelectorAll('.ajouter').forEach((button) => {
                                 button.addEventListener('click', () => {
                                     let dataObject = {
