@@ -14,3 +14,4 @@ This project is a web application that allows users to search for an address bas
 ## Dependencies
 - Bulma
 - Wepback
+- Babel
