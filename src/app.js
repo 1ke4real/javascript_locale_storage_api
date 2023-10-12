@@ -18,8 +18,14 @@ const cardComponent = (data) => {
         <span class="postcode">Code Postal :${data.postcode}</span>   
       </div>
         <footer class="card-footer">
-            <button class="supp button is-light card-footer-item">Supprimer</button>
-            <button class="voir button is-dark card-footer-item" data-id="${data.id}" >Voir</button>
+        ${
+          Object.keys(localStorage).includes(data.id)
+            ? `<button class="supp button is-danger card-footer-item" data-id="${data.id}">Supprimer</button>`
+            : `<button class="ajouter button is-success card-footer-item" data-id="${data.id}">Ajouter</button>`
+        }
+            <button class="see button is-dark card-footer-item" data-id="${
+              data.id
+            }" >Voir</button>
         </footer>
       </div>
       `;
@@ -127,7 +133,7 @@ window.onload = () => {
           location.reload();
         });
       });
-      document.querySelectorAll(".voir").forEach((button) => {
+      document.querySelectorAll(".see").forEach((button) => {
         button.addEventListener("click", () => {
           document.querySelectorAll(".modal").forEach((mod) => {
             if (button.dataset.id === mod.dataset.id) {
@@ -145,7 +151,6 @@ window.onload = () => {
       });
     });
   }
-
   formInput.addEventListener("input", () => {
     if (formInput.value.length > 0) {
       document.querySelectorAll(".card-search").forEach((s) => {
@@ -158,6 +163,7 @@ window.onload = () => {
     if (formInput.value.length > 4) {
       const fetchAdress = async () => {
         try {
+          result && (card.innerHTML = "");
           const response = await fetch(
             "https://api-adresse.data.gouv.fr/search/?q=" +
               formInput.value +
@@ -168,31 +174,28 @@ window.onload = () => {
           console.log(error);
         }
       };
-      if (formInput.value.length > 4) {
+      if (formInput.value.length > 3) {
         result && document.querySelector(".loader").classList.add("none");
         fetchAdress();
         result?.features?.forEach((values, key) => {
           card.innerHTML += cardComponent(values.properties);
-          Object.keys(document.querySelectorAll(".ajouter")).map(
-            (values, index) => {
-              button.addEventListener("click", () => {
-                let dataObject = {
-                  id: values.properties.id,
-                  label: values.properties.label,
-                  name: values.properties.name,
-                  city: values.properties.city,
-                  postcode: values.properties.postcode,
-                  lat: values.geometry.coordinates[1],
-                  long: values.geometry.coordinates[0],
-                };
-                localStorage.setItem(
-                  values.properties.id,
-                  JSON.stringify(dataObject),
-                );
-                location.reload();
-              });
-            },
-          );
+        });
+        document.querySelectorAll(".ajouter").forEach((button, index) => {
+          button.addEventListener("click", (e) => {
+            let dataObject = {
+              id: result.features[index].properties.id,
+              label: result.features[index].properties.label,
+              name: result.features[index].properties.name,
+              city: result.features[index].properties.city,
+              postcode: result.features[index].properties.postcode,
+              lat: result.features[index].geometry.coordinates[1],
+              long: result.features[index].geometry.coordinates[0],
+            };
+            localStorage.setItem(
+              result.features[index].properties.id,
+              JSON.stringify(dataObject),
+            );
+          });
         });
       }
     }
