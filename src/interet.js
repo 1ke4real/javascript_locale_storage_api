@@ -27,7 +27,6 @@ loader();
 
 window.onload = () => {
   let lskey = Object.keys(localStorage);
-  console.log(lskey);
   lskey.forEach((key) => {
     let jsonData = JSON.parse(localStorage.getItem(key));
     let jsonPoint = JSON.parse(localStorage.getItem("point-" + jsonData.id));
