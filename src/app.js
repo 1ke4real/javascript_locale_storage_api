@@ -3,6 +3,7 @@ import { uploadImage } from "./modules/file.mjs";
 
 let formInput = document.querySelector("#search");
 let card = document.querySelector(".result");
+let result = {};
 const cardComponent = (data) => {
   return `
       <div class="card column is-3 ">
@@ -62,6 +63,7 @@ const modalComponent = (data) => {
     </div>         
     `;
 };
+
 window.onload = () => {
   if (localStorage != null) {
     setTimeout(() => {
@@ -72,7 +74,6 @@ window.onload = () => {
       let jsonData = JSON.parse(localStorage.getItem(key));
       if (jsonData.id != null) {
         card.innerHTML += cardComponent(jsonData);
-
         document.querySelector(".mod").innerHTML += modalComponent(jsonData);
       }
       let imageLink;
@@ -123,11 +124,9 @@ window.onload = () => {
       document.querySelectorAll(".supp").forEach((button) => {
         button.addEventListener("click", () => {
           localStorage.removeItem(key);
-
           location.reload();
         });
       });
-
       document.querySelectorAll(".voir").forEach((button) => {
         button.addEventListener("click", () => {
           document.querySelectorAll(".modal").forEach((mod) => {
@@ -146,6 +145,7 @@ window.onload = () => {
       });
     });
   }
+
   formInput.addEventListener("input", () => {
     if (formInput.value.length > 0) {
       document.querySelectorAll(".card-search").forEach((s) => {
@@ -156,58 +156,45 @@ window.onload = () => {
       document.querySelector(".loader").classList.add("none");
     }
     if (formInput.value.length > 4) {
-      setTimeout(() => {
-        document.querySelector(".loader").classList.add("none");
-        fetch(
-          "https://api-adresse.data.gouv.fr/search/?q=" +
-            formInput.value +
-            "&limit=15&autocomplete=0",
-        )
-          .then((res) => res.json())
-          .then((data) => {
-            data.features.forEach((values, key) => {
-              console.log(values.properties);
-              card.innerHTML +=
-                '<div class="card column is-3 card-search" data-id="' +
-                values.properties.id +
-                '">' +
-                '           <div class="card-header"> <p class="label card-header-title">' +
-                values.properties.label +
-                "</p></div> <br>" +
-                '           <div class="card-content"> <span class="name">Nom :' +
-                values.properties.name +
-                "</span> <br>" +
-                '<span class="city">Ville :' +
-                values.properties.city +
-                "</span> <br>" +
-                '<span class="postcode">Code Postal :' +
-                values.properties.postcode +
-                "</span></div>" +
-                '       <div class="card-footer"> <button class="ajouter button is-dark card-footer-item" data-id="' +
-                values.properties.id +
-                '">Ajouter</button> </div></div> <br>';
-              document.querySelectorAll(".ajouter").forEach((button) => {
-                button.addEventListener("click", () => {
-                  let dataObject = {
-                    id: values.properties.id,
-                    label: values.properties.label,
-                    name: values.properties.name,
-                    city: values.properties.city,
-                    postcode: values.properties.postcode,
-                    lat: values.geometry.coordinates[1],
-                    long: values.geometry.coordinates[0],
-                  };
-                  localStorage.setItem(
-                    values.properties.id,
-                    JSON.stringify(dataObject),
-                  );
-                  location.reload();
-                });
+      const fetchAdress = async () => {
+        try {
+          const response = await fetch(
+            "https://api-adresse.data.gouv.fr/search/?q=" +
+              formInput.value +
+              "&limit=15&autocomplete=0",
+          );
+          return (result = await response.json());
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      if (formInput.value.length > 4) {
+        result && document.querySelector(".loader").classList.add("none");
+        fetchAdress();
+        result?.features?.forEach((values, key) => {
+          card.innerHTML += cardComponent(values.properties);
+          Object.keys(document.querySelectorAll(".ajouter")).map(
+            (values, index) => {
+              button.addEventListener("click", () => {
+                let dataObject = {
+                  id: values.properties.id,
+                  label: values.properties.label,
+                  name: values.properties.name,
+                  city: values.properties.city,
+                  postcode: values.properties.postcode,
+                  lat: values.geometry.coordinates[1],
+                  long: values.geometry.coordinates[0],
+                };
+                localStorage.setItem(
+                  values.properties.id,
+                  JSON.stringify(dataObject),
+                );
+                location.reload();
               });
-            });
-          })
-          .catch((error) => console.log(error));
-      }, 1000);
+            },
+          );
+        });
+      }
     }
   });
 };
